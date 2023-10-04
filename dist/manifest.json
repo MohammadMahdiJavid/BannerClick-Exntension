@@ -1,0 +1,63 @@
+{
+    "manifest_version": 3,
+    "name": "BannerClick",
+    "version": "1.0",
+    "description": "Detecting Cookie Banners",
+    "icons": {
+        "256": "static/icons/256-Icon.jpg"
+    },
+    "permissions": [
+        "tabs",
+        "cookies",
+        "activeTab",
+        "contextMenus",
+        "storage",
+        "debugger",
+        "desktopCapture"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "contentScript.bundle.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true,
+            "type": "module"
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "static/*"
+            ],
+            "matches": [
+                "<all_urls>"
+            ],
+            "use_dynamic_url": true
+        },
+        {
+            "resources": [
+                "test1.png"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ],
+    "action": {
+        "default_popup": "popup/popup.html",
+        "default_icon": {
+            "256": "static/icons/256-Icon.jpg"
+        },
+        "default_title": "Banner Detected?"
+    },
+    "author": {
+        "email": "mjavid@mpi-inf.mpg.de"
+    }
+}
