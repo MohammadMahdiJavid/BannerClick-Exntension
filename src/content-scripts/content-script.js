@@ -6,9 +6,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     // do stuff here
     console.log("content-script.js is being executed");
 
-    if (document.readyState !== "complete") {
+    while (document.readyState !== "complete") {
         console.log("document not ready");
-        await ((ms) => new Promise((resolve) => setTimeout(resolve, ms)))(1000);
+        await ((ms) => new Promise((resolve) => setTimeout(resolve, ms)))(2000);
     }
     // chrome.runtime.getURL("static/dictWords.json", async (fileUrl) => {
     //     response = await fetch(fileUrl);
@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     if (response.ok) {
         jsonizedFile = await response.json();
+        console.log(`json file containing words:`);
         console.log(jsonizedFile);
     } else {
         console.error(
@@ -29,6 +30,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         );
         return;
     }
+    console.log(`json file containing words:`);
     console.log(jsonizedFile);
     const banners = findBanners(document, "de", jsonizedFile);
+    console.log(`found banners`);
+    console.log(banners);
 });

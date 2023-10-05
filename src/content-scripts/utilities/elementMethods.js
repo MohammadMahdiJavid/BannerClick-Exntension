@@ -30,7 +30,7 @@ function findFixedAncestor(element) {
         element = element.parentElement;
     }
 }
-function isInsideViewport(element) {
+export function isInsideViewport(element) {
     // check if the element is inside the viewport
     const rects = element.getClientRects();
     const viewportHeight =
@@ -77,7 +77,7 @@ function isPositiveZIndexInt(element) {
     return zIndex !== "" && parseInt(zIndex) > 5;
 }
 
-function findAncestorWithIntZIndex(element) {
+export function findAncestorWithIntZIndex(element) {
     while (true) {
         if (element.tagName.toLowerCase() === "html") return null;
         else if (isPositiveZIndexInt(element)) return element;
@@ -134,4 +134,65 @@ export function deleteInvisibleElements(elements) {
         }
     });
     entriesToRemove(elements, invisibleElements);
+}
+
+export function findFixedAncestors(elements) {
+    const fixedAncestors = new Map();
+    elements.forEach((element) => {
+        const fixedAncestor = findFixedAncestor(element);
+        if (fixedAncestor) fixedAncestors.set(fixedAncestor, element);
+    });
+    return fixedAncestors;
+}
+
+export function findPath({ parent, element }) {
+    /*
+    sequential path between parent to element
+    */
+    const path = [];
+    let tmp = element;
+    while (tmp !== parent) {
+        path.unshift(tmp);
+        tmp = tmp.parentElement;
+    }
+    return path;
+}
+
+export function isElementSizeEqualToWindow(element) {
+    let tolerance = 0.1;
+    let windowSize = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+    };
+    let windowArea = windowSize.width * windowSize.height;
+    let elementArea = element.offsetWidth * element.offsetHeight;
+    return elementArea > (1 - tolerance) * windowArea;
+}
+
+export function isOneDimension(element) {
+    if (element.offsetWidth < 5 || element.offsetHeight < 5) return true;
+    return false;
+}
+
+export function isMajorChild(element, path) {
+    const elementArea = element.offsetWidth * element.offsetHeight;
+    const windowInnerSize = window.innerHeight * window.innerWidth;
+    for (const child of path) {
+        const childArea = child.offsetWidth * child.offsetHeight;
+        const isMajorSize = elementArea - childArea > windowInnerSize * 0.1;
+        if (
+            // textContent has better match compared to innerText
+            // child.innerText === element.innerText &&
+            child.textContent === element.textContent &&
+            isMajorSize &&
+            !isOneDimension(child)
+        )
+            return true;
+    }
+    return false;
+}
+
+export function hasEnoughWords(element) {
+    const matches = element.textContent.match(/\w+/g);
+    return matches && matches.length > 3;
 }
